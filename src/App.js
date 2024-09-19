@@ -14,6 +14,8 @@ function App() {
   const [cart, setCart] = useState([]);
   const [checkoutUrl, setCheckoutUrl] = useState("");
   const [socket, setSocket] = useState(null);
+  const [showProducts, setShowProducts] = useState(false);
+  const [showLiveChat, setShowLiveChat] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -64,39 +66,57 @@ function App() {
     }
   };
 
+  const toggleProductList = () => {
+    setShowProducts(!showProducts);
+  };
+
+  const toggleLiveChat = () => {
+    setShowLiveChat(!showLiveChat);
+  };
+
+ 
+  const videoContainerClass = `relative w-full ${
+    showLiveChat || showProducts ? "lg:w-2/3 xl:w-3/5" : "lg:w-full"
+  }`;
+  const mainClass = `${
+    !showLiveChat && !showProducts ? "flex items-center justify-center" : ""
+  }`;
+
   return (
-    
-      <div className="bg-gradient-to-br from-gray-100 to-blue-100 min-h-screen flex flex-col">
-        <header className="bg-blue-600 text-white p-4 text-center relative">
-          <h1 className="text-3xl font-bold">Shopify Live Commerce</h1>
-          <div className="absolute top-0 right-0 m-4">
-            <CartIndicator cart={cart} checkoutUrl={checkoutUrl} proceedToCheckout={proceedToCheckout} />
-          </div>
-        </header>
-    
-        <div className="flex-grow flex justify-center">
-          <main className="w-full max-w-7xl p-4 lg:p-6">
-            <div className="flex flex-col lg:flex-row lg:gap-8 gap-4 mb-8 lg:mb-12">
-              <div className="w-full sm:w-auto sm:h-auto lg:w-2/3 xl:w-3/5">
-                <div className="aspect-w-16 aspect-h-9">
-                  <VideoPlayer />
-                </div>
-              </div>
-              <div className="w-full lg:w-1/3 xl:w-2/5  lg:h-auto xl:h-auto">
+    <div className="bg-gradient-to-br from-gray-100 to-blue-100 min-h-screen flex flex-col">
+      <header className="bg-blue-600 text-white p-4 text-center relative">
+        <h1 className="text-3xl font-bold">Shopify Live Commerce</h1>
+        <div className="absolute top-0 right-0 m-4">
+          <CartIndicator cart={cart} checkoutUrl={checkoutUrl} proceedToCheckout={proceedToCheckout} />
+        </div>
+      </header>
+
+      <div className={`flex-grow flex justify-center ${mainClass}`}>
+        <main className="w-full max-w-7xl p-4 lg:p-6">
+          <div className="flex flex-col lg:flex-row lg:gap-8 gap-4 mb-8 lg:mb-12">
+            <div className={videoContainerClass}>
+              <VideoPlayer toggleProductList={toggleProductList} toggleLiveChat={toggleLiveChat} />
+            </div>
+
+            {showLiveChat && (
+              <div className="w-full lg:w-1/3 xl:w-2/5 lg:h-auto xl:h-auto">
                 {socket && <LiveChat socket={socket} />}
               </div>
+            )}
+          </div>
+
+          {showProducts && (
+            <div className="sm:mt-8 md:mt-12">
+              <ProductList products={products} addToCart={addToCart} />
             </div>
-            <div className=" sm:mt-8 md:mt-12">
-            <ProductList products={products} addToCart={addToCart} />
-            </div>
-          </main>
-        </div>
-    
-        <Footer />
+          )}
+        </main>
       </div>
-    );
-    
-  
+
+      <Footer />
+    </div>
+  );
 }
 
 export default App;
+
