@@ -6,10 +6,8 @@ import {
 
 const VideoPlayer = ({ toggleProductList, toggleLiveChat }) => {
   return (
-    <div className="p-6 rounded-lg">
-      <h2 className="text-xl font-bold mb-4 text-light-blue">
-        Live Video Stream
-      </h2>
+    <div className="p-1 rounded-lg">
+      
       <div className="relative w-full" style={{ paddingTop: "56.25%" }}>
         <iframe
           src="https://player.twitch.tv/?channel=itsmoura&parent=localhost"
@@ -20,13 +18,13 @@ const VideoPlayer = ({ toggleProductList, toggleLiveChat }) => {
 
        
         <button
-          className="absolute bottom-36 right-4  text-white p-2 rounded-full flex items-center justify-center hover:bg-blue-500 transition duration-300"
+          className="absolute lg:bottom-36 bottom-4 right-4 bg-blue-600 bg-opacity-70 text-white p-2 rounded-full flex items-center justify-center hover:bg-opacity-90 transition duration-300"
           onClick={toggleProductList}
           style={{
-            width: "3vw", 
-            height: "3vw", 
-            minWidth: "40px", 
-            minHeight: "40px", 
+            width: "3vw",
+            height: "3vw",
+            minWidth: "40px",
+            minHeight: "40px",
           }}
         >
           <BuildingStorefrontIcon className="w-full h-full text-white" />
@@ -34,13 +32,13 @@ const VideoPlayer = ({ toggleProductList, toggleLiveChat }) => {
 
         
         <button
-          className="absolute bottom-20 right-4  text-white p-2 rounded-full flex items-center justify-center hover:bg-blue-500 transition duration-300"
+          className="absolute lg:bottom-20 bottom-16 right-4 bg-blue-600 bg-opacity-70 text-white p-2 rounded-full flex items-center justify-center hover:bg-opacity-90 transition duration-300"
           onClick={toggleLiveChat}
           style={{
-            width: "3vw", 
-            height: "3vw", 
-            minWidth: "40px", 
-            minHeight: "40px", 
+            width: "3vw",
+            height: "3vw",
+            minWidth: "40px",
+            minHeight: "40px",
           }}
         >
           <ChatBubbleLeftIcon className="w-full h-full text-white" />
@@ -51,3 +49,4 @@ const VideoPlayer = ({ toggleProductList, toggleLiveChat }) => {
 };
 
 export default VideoPlayer;
+

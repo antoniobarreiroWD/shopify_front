@@ -40,7 +40,7 @@ function LiveChat({ socket }) {
 
   return (
     <div className="p-6 rounded-lg min-w-[300px]">
-      <h2 className="text-xl font-bold mb-4 text-light-blue">Chat</h2>
+
       {!isUsernameSet ? (
         <div className="mb-4">
           <input

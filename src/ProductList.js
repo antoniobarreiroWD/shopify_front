@@ -3,7 +3,7 @@ import React from "react";
 function ProductList({ products, addToCart }) {
   return (
     <div className=" p-6 rounded-lg ">
-      <h2 className="text-xl font-bold mb-4 text-light-blue">Productos</h2>
+  
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {products.map((product) => (
           <div key={product.id} className="bg-black p-6 rounded-lg shadow-md">

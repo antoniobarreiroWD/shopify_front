@@ -53,13 +53,13 @@ function CartIndicator({ cart, checkoutUrl, proceedToCheckout, updateCart }) {
       </div>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg z-10 p-4">
+        <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg z-10 p-4 text-black font-bold">
           <h2 className="text-xl font-semibold">Carrito</h2>
           {cart.length > 0 ? (
             <>
               <ul className="mt-4 space-y-2 max-h-40 overflow-y-auto">
                 {cart.map((item, index) => (
-                  <li key={index} className="bg-off-white p-4 rounded shadow text-black">
+                  <li key={index} className="bg-green-100 p-4 rounded shadow text-black font-semibold">
                     {item.title} - Cantidad: {item.quantity}
                     <div className="flex justify-between mt-2">
                       <button

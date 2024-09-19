@@ -3,9 +3,9 @@ import axios from "axios";
 import ProductList from "./ProductList";
 import LiveChat from "./LiveChat";
 import VideoPlayer from "./VideoPlayer";
-import CartIndicator from "./CartIndicator";
 import io from "socket.io-client";
 import Footer from "./Footer";
+import Header from "./Header"; 
 
 axios.defaults.withCredentials = true;
 
@@ -15,7 +15,7 @@ function App() {
   const [checkoutUrl] = useState("");
   const [socket, setSocket] = useState(null);
   const [showProducts, setShowProducts] = useState(false);
-  const [showLiveChat, setShowLiveChat] = useState(true);
+  const [showLiveChat, setShowLiveChat] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -45,19 +45,16 @@ function App() {
     const existingItemIndex = currentCart.findIndex(item => item.variantId === variantId);
 
     if (existingItemIndex !== -1) {
-      
       currentCart[existingItemIndex].quantity += quantity;
     } else {
-     
       currentCart.push({ variantId, quantity, title: product.title, price: product.variants[0].price });
     }
 
     sessionStorage.setItem("cart", JSON.stringify(currentCart));
     setCart(currentCart); 
-    alert("Producto añadido al carrito");
+    
   };
 
-  
   const updateCart = (updatedCart) => {
     setCart(updatedCart);
   };
@@ -65,14 +62,11 @@ function App() {
   const proceedToCheckout = async () => {
     try {
       const cartItems = JSON.parse(sessionStorage.getItem("cart") || "[]");
-      
-      
       console.log("Items del carrito enviados:", cartItems);
-  
       const response = await axios.post("http://localhost:3000/checkout", {
         items: cartItems, 
       });
-  
+
       if (response.data.webUrl) {
         window.location.href = response.data.webUrl; 
       } else {
@@ -81,16 +75,11 @@ function App() {
       }
     } catch (error) {
       console.error("Error al proceder al checkout:", error.message);
-  
-      
       if (error.response) {
         console.error("Detalles del error HTTP:", error.response.data);
       }
     }
   };
-  
-  
-  
 
   const toggleProductList = () => {
     setShowProducts(!showProducts);
@@ -108,19 +97,13 @@ function App() {
   }`;
 
   return (
-    <div className="bg-gradient-to-br from-gray-100 to-blue-100 min-h-screen flex flex-col">
-      <header className="bg-blue-600 text-white p-4 text-center relative">
-        <h1 className="text-3xl font-bold">Shopify Live Commerce</h1>
-        <div className="absolute top-0 right-0 m-4">
-          <CartIndicator
-            cart={cart}
-            checkoutUrl={checkoutUrl}
-            proceedToCheckout={proceedToCheckout}
-            updateCart={updateCart}  
-          />
-        </div>
-      </header>
-
+    <div className="bg-gradient-to-br from-gray-100 to-blue-400 min-h-screen flex flex-col font-sans">
+      <Header
+        cart={cart}
+        checkoutUrl={checkoutUrl}
+        proceedToCheckout={proceedToCheckout}
+        updateCart={updateCart}
+      />
       <div className={`flex-grow flex justify-center ${mainClass}`}>
         <main className="w-full max-w-7xl p-4 lg:p-6">
           <div className="flex flex-col lg:flex-row lg:gap-8 gap-4 mb-8 lg:mb-12">
@@ -142,10 +125,10 @@ function App() {
           )}
         </main>
       </div>
-
       <Footer />
     </div>
   );
 }
 
 export default App;
+

@@ -24,7 +24,7 @@ module.exports = {
         'gradient-to-b': 'linear-gradient(to bottom, #2563EB, #3B82F6)', 
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],  
+        sans: ['Signika', 'sans-serif'],  
         
 
 
