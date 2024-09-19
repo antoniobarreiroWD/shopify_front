@@ -17,11 +17,12 @@ function ProductList({ products, addToCart }) {
             <h3 className="text-lg font-semibold text-white">{product.title}</h3>
             <p className="text-gray-200 mt-2">Precio: {product.variants[0].price} Euros</p>
             <button
-              className="mt-4 bg-sky-blue text-white px-4 py-2 rounded hover:bg-secondary-blue"
-              onClick={() => addToCart(product.variants[0].id, 1)}
-            >
-              Añadir al carrito
-            </button>
+  className="mt-4 bg-sky-blue text-white px-4 py-2 rounded hover:bg-secondary-blue"
+  onClick={() => addToCart(product.variants[0].id, 1, product)}
+>
+  Añadir al carrito
+</button>
+
             </div>
         ))}
       </div>

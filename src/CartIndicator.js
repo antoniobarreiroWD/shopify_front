@@ -1,17 +1,53 @@
 import React, { useState } from "react";
 
-function CartIndicator({ cart, checkoutUrl, proceedToCheckout }) {
+function CartIndicator({ cart, checkoutUrl, proceedToCheckout, updateCart }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleCart = () => {
-    setIsOpen(!isOpen);
+  const totalItemsInCart = cart.reduce((total, item) => total + item.quantity, 0);
+
+  
+  const decreaseQuantity = (variantId) => {
+    const updatedCart = cart
+      .map((item) => {
+        if (item.variantId === variantId && item.quantity > 1) {
+          return { ...item, quantity: item.quantity - 1 };
+        }
+        return item;
+      })
+      .filter((item) => item.quantity > 0);
+
+    sessionStorage.setItem("cart", JSON.stringify(updatedCart));
+    updateCart(updatedCart);
   };
+
+  
+  const increaseQuantity = (variantId) => {
+    const updatedCart = cart.map((item) => {
+      if (item.variantId === variantId) {
+        return { ...item, quantity: item.quantity + 1 };
+      }
+      return item;
+    });
+
+    sessionStorage.setItem("cart", JSON.stringify(updatedCart));
+    updateCart(updatedCart);
+  };
+
+  
+  const removeFromCart = (variantId) => {
+    const updatedCart = cart.filter((item) => item.variantId !== variantId);
+    sessionStorage.setItem("cart", JSON.stringify(updatedCart));
+    updateCart(updatedCart);
+  };
+
+  
+  
 
   return (
     <div className="relative inline-block">
-      <div className="relative cursor-pointer" onClick={toggleCart}>
+      <div className="relative cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
         <span className="bg-red-500 text-white rounded-full px-2 py-1 text-sm">
-          {cart.reduce((total, item) => total + item.node.quantity, 0)}
+          {totalItemsInCart}
         </span>
         <span className="ml-2">🛒</span>
       </div>
@@ -24,7 +60,31 @@ function CartIndicator({ cart, checkoutUrl, proceedToCheckout }) {
               <ul className="mt-4 space-y-2 max-h-40 overflow-y-auto">
                 {cart.map((item, index) => (
                   <li key={index} className="bg-off-white p-4 rounded shadow text-black">
-                    {item.node.title} - Cantidad: {item.node.quantity}
+                    {item.title} - Cantidad: {item.quantity}
+                    <div className="flex justify-between mt-2">
+                      <button
+                        className="bg-blue-500 text-white px-2 py-1 rounded"
+                        onClick={() => increaseQuantity(item.variantId)}
+                      >
+                        +1
+                      </button>
+
+                      {item.quantity > 1 && (
+                        <button
+                          className="bg-blue-500 text-white px-2 py-1 rounded"
+                          onClick={() => decreaseQuantity(item.variantId)}
+                        >
+                          -1
+                        </button>
+                      )}
+
+                      <button
+                        className="bg-red-500 text-white px-2 py-1 rounded"
+                        onClick={() => removeFromCart(item.variantId)}
+                      >
+                        Eliminar
+                      </button>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -58,3 +118,5 @@ function CartIndicator({ cart, checkoutUrl, proceedToCheckout }) {
 }
 
 export default CartIndicator;
+
+

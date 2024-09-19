@@ -12,7 +12,7 @@ axios.defaults.withCredentials = true;
 function App() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
-  const [checkoutUrl, setCheckoutUrl] = useState("");
+  const [checkoutUrl] = useState("");
   const [socket, setSocket] = useState(null);
   const [showProducts, setShowProducts] = useState(false);
   const [showLiveChat, setShowLiveChat] = useState(true);
@@ -29,6 +29,9 @@ function App() {
 
     fetchProducts();
 
+    const storedCart = JSON.parse(sessionStorage.getItem("cart")) || [];
+    setCart(storedCart); 
+
     const newSocket = io("http://localhost:3000");
     setSocket(newSocket);
 
@@ -37,34 +40,57 @@ function App() {
     };
   }, []);
 
-  const addToCart = async (variantId, quantity) => {
-    try {
-      const response = await axios.post("http://localhost:3000/add-to-cart", {
-        variantId,
-        quantity,
-      });
+  const addToCart = (variantId, quantity, product) => {
+    const currentCart = JSON.parse(sessionStorage.getItem("cart")) || [];
+    const existingItemIndex = currentCart.findIndex(item => item.variantId === variantId);
 
-      setCart(response.data.checkout.lineItems || []);
-      alert("Producto añadido al carrito");
-    } catch (error) {
-      console.error("Error al agregar al carrito:", error.message);
+    if (existingItemIndex !== -1) {
+      
+      currentCart[existingItemIndex].quantity += quantity;
+    } else {
+     
+      currentCart.push({ variantId, quantity, title: product.title, price: product.variants[0].price });
     }
+
+    sessionStorage.setItem("cart", JSON.stringify(currentCart));
+    setCart(currentCart); 
+    alert("Producto añadido al carrito");
+  };
+
+  
+  const updateCart = (updatedCart) => {
+    setCart(updatedCart);
   };
 
   const proceedToCheckout = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/checkout");
-
+      const cartItems = JSON.parse(sessionStorage.getItem("cart") || "[]");
+      
+      
+      console.log("Items del carrito enviados:", cartItems);
+  
+      const response = await axios.post("http://localhost:3000/checkout", {
+        items: cartItems, 
+      });
+  
       if (response.data.webUrl) {
-        setCheckoutUrl(response.data.webUrl);
+        window.location.href = response.data.webUrl; 
       } else {
         console.error("No se recibió la URL del checkout");
         alert("No se pudo proceder al checkout");
       }
     } catch (error) {
       console.error("Error al proceder al checkout:", error.message);
+  
+      
+      if (error.response) {
+        console.error("Detalles del error HTTP:", error.response.data);
+      }
     }
   };
+  
+  
+  
 
   const toggleProductList = () => {
     setShowProducts(!showProducts);
@@ -74,7 +100,6 @@ function App() {
     setShowLiveChat(!showLiveChat);
   };
 
- 
   const videoContainerClass = `relative w-full ${
     showLiveChat || showProducts ? "lg:w-2/3 xl:w-3/5" : "lg:w-full"
   }`;
@@ -87,7 +112,12 @@ function App() {
       <header className="bg-blue-600 text-white p-4 text-center relative">
         <h1 className="text-3xl font-bold">Shopify Live Commerce</h1>
         <div className="absolute top-0 right-0 m-4">
-          <CartIndicator cart={cart} checkoutUrl={checkoutUrl} proceedToCheckout={proceedToCheckout} />
+          <CartIndicator
+            cart={cart}
+            checkoutUrl={checkoutUrl}
+            proceedToCheckout={proceedToCheckout}
+            updateCart={updateCart}  
+          />
         </div>
       </header>
 
@@ -119,4 +149,3 @@ function App() {
 }
 
 export default App;
-
