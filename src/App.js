@@ -9,6 +9,9 @@ import Header from "./Header";
 
 axios.defaults.withCredentials = true;
 
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
+const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || "http://localhost:3000";
+
 function App() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
@@ -20,7 +23,7 @@ function App() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/products");
+        const response = await axios.get(`${API_URL}/products`);
         setProducts(response.data.products);
       } catch (error) {
         console.error("Error al obtener productos:", error.message);
@@ -32,7 +35,7 @@ function App() {
     const storedCart = JSON.parse(sessionStorage.getItem("cart")) || [];
     setCart(storedCart); 
 
-    const newSocket = io("http://localhost:3000");
+    const newSocket = io(SOCKET_URL);
     setSocket(newSocket);
 
     return () => {
@@ -63,7 +66,7 @@ function App() {
     try {
       const cartItems = JSON.parse(sessionStorage.getItem("cart") || "[]");
       console.log("Items del carrito enviados:", cartItems);
-      const response = await axios.post("http://localhost:3000/checkout", {
+      const response = await axios.post(`${API_URL}/checkout`, {
         items: cartItems, 
       });
 

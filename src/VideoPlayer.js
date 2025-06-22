@@ -10,7 +10,7 @@ const VideoPlayer = ({ toggleProductList, toggleLiveChat }) => {
       
       <div className="relative w-full" style={{ paddingTop: "56.25%" }}>
         <iframe
-          src="https://player.twitch.tv/?channel=itsmoura&parent=localhost"
+          src={`https://player.twitch.tv/?channel=${process.env.REACT_APP_TWITCH_CHANNEL}&parent=${process.env.REACT_APP_TWITCH_PARENT}`}
           className="absolute top-0 left-0 w-full h-full rounded-lg"
           allowFullScreen
           title="Twitch Live Stream"
